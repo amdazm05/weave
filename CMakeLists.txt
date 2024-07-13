@@ -9,18 +9,20 @@ set(PROJECT_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
 project(weave VERSION ${PROJECT_VERSION})
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-include(fetch_lib_curl)
 
 # Sets the path to CMake custom modules
 set(OLD_CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-fetch_lib_curl()
-
-
 message("WEAVE_CMAKE_PROJECT_VERSION : ${PROJECT_VERSION}")
 
 #Use includes and utilities here
+include(extract_lib_curl)
+include(fetch_lib_curl)
+
+#Fetches LibCurl
+fetch_lib_curl()
+extract_libcurl()
 
 #Restore Module Path once done
 set(CMAKE_MODULE_PATH ${OLD_CMAKE_MODULE_PATH})

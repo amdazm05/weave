@@ -17,12 +17,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 message("WEAVE_CMAKE_PROJECT_VERSION : ${PROJECT_VERSION}")
 
 #Use includes and utilities here
-include(extract_lib_curl)
-include(fetch_lib_curl)
-
-#Fetches LibCurl
-fetch_lib_curl()
-extract_libcurl()
+include(Libcurl)
+LibCurlFetchInstall("8.8.0")
 
 #Restore Module Path once done
 set(CMAKE_MODULE_PATH ${OLD_CMAKE_MODULE_PATH})

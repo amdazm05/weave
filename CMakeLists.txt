@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-
+cmake_policy(SET CMP0063 NEW) 
 # Project version
 set(MAJOR_VERSION 0)
 set(MINOR_VERSION 0)
@@ -18,7 +18,9 @@ message("WEAVE_CMAKE_PROJECT_VERSION : ${PROJECT_VERSION}")
 
 #Use includes and utilities here
 include(Libcurl)
-LibCurlFetchInstall("8.8.0")
+include(LibOpenSSL)
+LibOpenSSL("3.3.1")
+# LibCurlFetchInstall("8_8_0")
 
 #Restore Module Path once done
 set(CMAKE_MODULE_PATH ${OLD_CMAKE_MODULE_PATH})

@@ -19,8 +19,8 @@ message("WEAVE_CMAKE_PROJECT_VERSION : ${PROJECT_VERSION}")
 #Use includes and utilities here
 include(Libcurl)
 include(LibOpenSSL)
-LibOpenSSL("3.3.1")
-# LibCurlFetchInstall("8_8_0")
+LibOpenSSL("3.0.14")
+LibCurlFetchInstall("8_8_0")
 
 #Restore Module Path once done
 set(CMAKE_MODULE_PATH ${OLD_CMAKE_MODULE_PATH})

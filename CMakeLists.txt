@@ -4,23 +4,23 @@ cmake_policy(SET CMP0063 NEW)
 set(MAJOR_VERSION 0)
 set(MINOR_VERSION 0)
 set(PATCH_VERSION 0)
+set(UNIT_TESTS TRUE)
 set(PROJECT_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
 
 project(weave VERSION ${PROJECT_VERSION})
-
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-
-# Sets the path to CMake custom modules
-set(OLD_CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 message("WEAVE_CMAKE_PROJECT_VERSION : ${PROJECT_VERSION}")
 
 #Use includes and utilities here
 include(Libcurl)
 include(LibOpenSSL)
-LibOpenSSL("3.0.14")
-LibCurlFetchInstall("8_8_0")
-
-#Restore Module Path once done
-set(CMAKE_MODULE_PATH ${OLD_CMAKE_MODULE_PATH})
+include(Catch2Utils)
+# LibOpenSSL("3.0.14")
+# LibCurlFetchInstall("8_8_0")
+FetchCatch2("3.6.0")
+# cmake_print_variables(UNIT_TESTS)
+if(UNIT_TESTS)
+    message("Tests Enabled for WEAVE ${PROJECT_VERSION} ")
+    add_subdirectory(${CMAKE_SOURCE_DIR}/tests)    
+endif()

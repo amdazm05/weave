@@ -1,4 +1,4 @@
-function(LibCurlFetchInstall LIBCURL_VERSION)
+macro(LibCurlFetchInstall LIBCURL_VERSION)
   set(LIBCURL_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/libcurl-src)
   set(LIBCURL_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/libcurl)
   set(LIBCURL_INCLUDE_DIR ${LIBCURL_INSTALL_DIR}/include)
@@ -19,4 +19,4 @@ function(LibCurlFetchInstall LIBCURL_VERSION)
     UPDATE_COMMAND ""
     DOWNLOAD_EXTRACT_TIMESTAMP true
   )
-endfunction(LibCurlFetchInstall)
+endmacro(LibCurlFetchInstall)

@@ -1,4 +1,4 @@
-function(LibOpenSSL OPENSSL_VERSION)
+macro(LibOpenSSL OPENSSL_VERSION)
     set(OPENSSL_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/openssl-src) # default path by CMake
     set(OPENSSL_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/openssl)
     set(OPENSSL_INCLUDE_DIR ${OPENSSL_INSTAL_DIR}/include)
@@ -20,7 +20,13 @@ function(LibOpenSSL OPENSSL_VERSION)
         UPDATE_COMMAND ""
         DOWNLOAD_EXTRACT_TIMESTAMP true
     )
-endfunction(LibOpenSSL)
+endmacro(LibOpenSSL)
+
+macro(LinkAndIncludeOpenSSLToExecutable NAME_EXE)
+  target_link_libraries(${NAME_EXE} PRIVATE ${OPENSSL_INSTALL_DIR}/lib64/libssl.a ${OPENSSL_INSTALL_DIR}/lib64/libcrypto.a)
+  target_include_directories(${NAME_EXE} PRIVATE ${CMAKE_BINARY_DIR}/openssl/include)
+endmacro(LinkAndIncludeOpenSSLToExecutable)
+
 # Read this :: ->
 # https://github.com/msys2/MINGW-packages/blob/master/mingw-w64-openssl/PKGBUILD'
 # https://github.com/openssl/openssl/discussions/23469 for 3.3.1

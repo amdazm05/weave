@@ -1,4 +1,4 @@
-function(LibCurlFetchInstall LIBCURL_VERSION)
+macro(LibCurlFetchInstall LIBCURL_VERSION)
   set(LIBCURL_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/libcurl-src)
   set(LIBCURL_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/libcurl)
   set(LIBCURL_INCLUDE_DIR ${LIBCURL_INSTALL_DIR}/include)
@@ -19,4 +19,9 @@ function(LibCurlFetchInstall LIBCURL_VERSION)
     UPDATE_COMMAND ""
     DOWNLOAD_EXTRACT_TIMESTAMP true
   )
-endfunction(LibCurlFetchInstall)
+endmacro(LibCurlFetchInstall)
+
+function(LinkAndIncludeLibCurlToExecutable NAME_EXE)
+  target_link_libraries(${NAME_EXE} PRIVATE ${LIBCURL_INSTALL_DIR}/lib/libcurl.a ${OPENSSL_INSTALL_DIR}/lib64/libssl.a ${OPENSSL_INSTALL_DIR}/lib64/libcrypto.a )
+  target_include_directories(${NAME_EXE} PRIVATE ${LIBCURL_INSTALL_DIR}/include)
+endfunction(LinkAndIncludeLibCurlToExecutable)

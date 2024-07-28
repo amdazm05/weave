@@ -21,6 +21,12 @@ macro(LibOpenSSL OPENSSL_VERSION)
         DOWNLOAD_EXTRACT_TIMESTAMP true
     )
 endmacro(LibOpenSSL)
+
+macro(LinkAndIncludeOpenSSLToExecutable NAME_EXE)
+  target_link_libraries(${NAME_EXE} PRIVATE ${OPENSSL_INSTALL_DIR}/lib64/libssl.a ${OPENSSL_INSTALL_DIR}/lib64/libcrypto.a)
+  target_include_directories(${NAME_EXE} PRIVATE ${CMAKE_BINARY_DIR}/openssl/include)
+endmacro(LinkAndIncludeOpenSSLToExecutable)
+
 # Read this :: ->
 # https://github.com/msys2/MINGW-packages/blob/master/mingw-w64-openssl/PKGBUILD'
 # https://github.com/openssl/openssl/discussions/23469 for 3.3.1

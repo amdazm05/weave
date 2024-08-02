@@ -9,3 +9,6 @@ LinkAndIncludeOpenSSLToExecutable(002-openssl_dep_test)
 
 CompileTestFile(003-libcurl_dep_test ${CMAKE_SOURCE_DIR}/tests/003-libcurl_dep_test.cc)
 LinkAndIncludeLibCurlToExecutable(003-libcurl_dep_test)
+
+CompileTestFile(004-hiredis_dep_test ${CMAKE_SOURCE_DIR}/tests/004-hiredis_dep_test.cc)
+LinkAndIncludeHiredisToExecutable(004-hiredis_dep_test)

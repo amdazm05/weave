@@ -7,7 +7,7 @@
 #include <curl/curl.h>
 #include <hiredis/hiredis.h>
 #include <openssl/ssl.h>
-#include <
+#include "curl_handler.hpp"
 
 namespace weave
 {
@@ -17,6 +17,7 @@ namespace weave
     class WeaveEngine
     {
         private:
+            CurlHandler &curl_handle;
             WeaveEngine();
         public:
             [[noreturn]]static void init();

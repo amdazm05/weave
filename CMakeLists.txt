@@ -23,6 +23,12 @@ LibCurlFetchInstall("8_8_0")
 LibHIREDIS("v1.2.0")
 FetchCatch2("3.6.0")
 Libspdlog("v1.14.1")
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
+file( GLOB WEAVE_SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*/*.cc ${PROJECT_SOURCE_DIR}/src/*/*.cpp)
+
+add_library(weave STATIC ${WEAVE_SOURCE_FILES})
+
 # cmake_print_variables(UNIT_TESTS)
 if(UNIT_TESTS)
     message("Tests Enabled for WEAVE ${PROJECT_VERSION} ")

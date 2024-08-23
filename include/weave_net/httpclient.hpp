@@ -2,6 +2,7 @@
 #define _WEAVE_HTTP_CLITN
 
 #include "weave/weave_engine.hpp"
+#include "weave_ds/const_expr_map.tpp"
 #include <type_traits>
 #include <unordered_map>
 
@@ -35,8 +36,10 @@ namespace weave
         Https = 443,
         Unknown = -1,
     };
-    const std::unordered_map<std::string_view, protocol_t> map{{{"http", protocol_t::Http},
-                                                                {"https", protocol_t::Https}}};
+
+    static constexpr std::array<std::pair<std::string_view, protocol_t>, 3>
+        protocol_map = {{{"http", protocol_t::Http},
+                         {"https", protocol_t::Https}}};
     struct authority_t
     {
         std::string_view user;
@@ -58,6 +61,14 @@ namespace weave
      *      Fragment :  "#"
      ***/
     using uri_t = std::string_view;
+    static constexpr protocol_t get_protocol_from_view(
+           const std::string_view prot)
+    {
+        constexpr auto map_prot = ct_map<std::string_view, protocol_t, protocol_map.size()>
+            {{protocol_map}};
+        return map_prot.find(prot);
+    }
+    
     class UriHandleCT
     {
     public:
@@ -95,15 +106,10 @@ namespace weave
                 return;
             protocol = get_protocol_from_view(protocol_str);
         }
-        static constexpr protocol_t
-        get_protocol_from_view(std::string_view prot)
-        {
-            if(prot=="http") return protocol_t::Http;
-            if(prot=="https") return protocol_t::Https;
-            return protocol_t::Unknown;
-        }
+        
     private:
         uri_t _uri;
+        
     public:
         protocol_t protocol;
         authority_t authority;

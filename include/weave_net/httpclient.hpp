@@ -3,6 +3,7 @@
 
 #include "weave/weave_engine.hpp"
 #include <type_traits>
+#include <unordered_map>
 
 namespace weave
 {
@@ -17,10 +18,12 @@ namespace weave
 
     using port_t = int;
     /****
-     *      Http = 80: The standard port number for the HTTP (Hypertext Transfer Protocol) is 80.
-     *              This is the default port used for unencrypted HTTP connections.
+     *      Http = 80: The standard port number for the HTTP
+     *               (Hypertext Transfer Protocol) is 80.
+     *               This is the default port used for unencrypted HTTP connections.
      *      Https= 443:
-     *              The standard port number for the HTTPS (Hypertext Transfer Protocol Secure) is 443.
+     *              The standard port number for the HTTPS
+     *              (Hypertext Transfer Protocol Secure) is 443.
      *              This is the default port used for encrypted HTTP connections over SSL/TLS.
      *      Unknown= -1:
      *              The Unknown value is assigned a value of -1 to represent a protocol that is not recognized
@@ -32,7 +35,8 @@ namespace weave
         Https = 443,
         Unknown = -1,
     };
-
+    const std::unordered_map<std::string_view, protocol_t> map{{{"http", protocol_t::Http},
+                                                                {"https", protocol_t::Https}}};
     struct authority_t
     {
         std::string_view user;
@@ -57,6 +61,13 @@ namespace weave
     class UriHandleCT
     {
     public:
+        using uri_t = std::string_view;
+        // using protocol_t = std::string_view;
+        using authority_t = std::string_view;
+        using path_t = std::string_view;
+        using query_t = std::string_view;
+
+    public:
         constexpr UriHandleCT(uri_t uri) : _uri(uri)
         {
             split(_uri, protocol, authority, path);
@@ -70,22 +81,30 @@ namespace weave
             _uri = uri;
             split(_uri, protocol, authority, path);
         }
-
         ~UriHandleCT() = default;
 
     private:
         static constexpr void split(
-            uri_t uri, protocol_t &protocol, authority_t authority, path_t path)
+            uri_t uri, protocol_t &protocol, authority_t authority,
+            path_t path)
         {
             if (uri == "")
-            {
                 return;
-            }
-            constexpr auto protocol_str = uri.substr(0, uri.find(":"));
+            auto protocol_str = uri.substr(0, uri.find(":"));
+            if (protocol_str == "")
+                return;
+            protocol = get_protocol_from_view(protocol_str);
         }
-
-    public:
+        static constexpr protocol_t
+        get_protocol_from_view(std::string_view prot)
+        {
+            if(prot=="http") return protocol_t::Http;
+            if(prot=="https") return protocol_t::Https;
+            return protocol_t::Unknown;
+        }
+    private:
         uri_t _uri;
+    public:
         protocol_t protocol;
         authority_t authority;
         path_t path;

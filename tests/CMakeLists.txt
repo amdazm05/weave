@@ -32,3 +32,5 @@ add_test(NAME 004-hiredis_dep_test
          COMMAND 004-hiredis_dep_test)
 add_test(NAME 005-spdlog_dep_test
          COMMAND 005-spdlog_dep_test)
+add_test(NAME 006-http_uri_tests
+         COMMAND 006-http_uri_tests)

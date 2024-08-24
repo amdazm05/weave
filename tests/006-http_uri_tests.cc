@@ -7,6 +7,11 @@ TEST_CASE("http-uri-protocol-test","[single-file]")
 {
     constexpr UriHandleCT handle2{"https://www.testurl.com"};
     REQUIRE( handle2.protocol==protocol_t::Https);
+    REQUIRE( handle2.authority.host== "www.testurl.com");
     constexpr UriHandleCT handle3{"http://www.testurl.com"};
     REQUIRE( handle3.protocol==protocol_t::Http);
+    REQUIRE( handle3.authority.host=="www.testurl.com");
+    constexpr UriHandleCT handle4{"http://255.255.255:9000"};
+    REQUIRE( handle4.protocol==protocol_t::Http);
+    REQUIRE( handle4.authority.host=="255.255.255");
 }

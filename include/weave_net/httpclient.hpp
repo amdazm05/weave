@@ -5,6 +5,7 @@
 #include "weave_ds/const_expr_map.tpp"
 #include <type_traits>
 #include <unordered_map>
+#include <algorithm>
 
 namespace weave
 {
@@ -44,7 +45,6 @@ namespace weave
     {
         std::string_view user;
         std::string_view host;
-        port_t port;
     };
     using path_t = std::string_view;
     using query_t = std::string_view;
@@ -73,8 +73,6 @@ namespace weave
     {
     public:
         using uri_t = std::string_view;
-        // using protocol_t = std::string_view;
-        using authority_t = std::string_view;
         using path_t = std::string_view;
         using query_t = std::string_view;
 
@@ -96,8 +94,8 @@ namespace weave
 
     private:
         static constexpr void split(
-            uri_t uri, protocol_t &protocol, authority_t authority,
-            path_t path)
+            uri_t uri, protocol_t &protocol, authority_t &authority,
+            path_t &path)
         {
             if (uri == "")
                 return;
@@ -105,11 +103,17 @@ namespace weave
             if (protocol_str == "")
                 return;
             protocol = get_protocol_from_view(protocol_str);
-        }
-        
+            auto offset_to_auth = uri.find(":")+3; //skips // here
+            //This may not be a case
+            //if we have a .com then find it next : here
+            auto index_hostname
+		        =   uri.find(":",uri.find(":")+3)==uri.npos?
+                    uri.find(".com")+4:uri.find(":",uri.find(":")+3);
+            auto auth_str = uri.substr(offset_to_auth,index_hostname-offset_to_auth);
+            authority.host = auth_str;
+	}
     private:
         uri_t _uri;
-        
     public:
         protocol_t protocol;
         authority_t authority;
@@ -127,3 +131,4 @@ namespace weave
 }
 
 #endif //_WEAVE_HTTP_CLIENT
+//https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3420.html

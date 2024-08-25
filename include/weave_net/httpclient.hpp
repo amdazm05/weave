@@ -45,6 +45,7 @@ namespace weave
     {
         std::string_view user;
         std::string_view host;
+        std::string_view port;
     };
     using path_t = std::string_view;
     using query_t = std::string_view;
@@ -106,11 +107,18 @@ namespace weave
             auto offset_to_auth = uri.find(":")+3; //skips // here
             //This may not be a case
             //if we have a .com then find it next : here
+            auto check_type_hostname = uri.find(":",uri.find(":")+3);
             auto index_hostname
-		        =   uri.find(":",uri.find(":")+3)==uri.npos?
-                    uri.find(".com")+4:uri.find(":",uri.find(":")+3);
+		        =   check_type_hostname==uri.npos?
+                    uri.find(".com")+4:check_type_hostname;
             auto auth_str = uri.substr(offset_to_auth,index_hostname-offset_to_auth);
             authority.host = auth_str;
+            if(check_type_hostname!=uri.npos)
+                authority.port = uri.substr(index_hostname+1,
+				uri.find("/",index_hostname)-index_hostname-1);
+	    else 
+		authority.port = "";
+
 	}
     private:
         uri_t _uri;

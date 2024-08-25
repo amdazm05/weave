@@ -16,6 +16,7 @@ macro(Libspdlog spdlog_VERSION)
         -DSPDLOG_INSTALL=ON
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
   )
+  include_directories(${spdlog_INSTALL_DIR}/include)
 endmacro(Libspdlog)
 
 function(LinkAndIncludespdlogToExecutable NAME_EXE)

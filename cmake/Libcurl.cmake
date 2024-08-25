@@ -19,6 +19,7 @@ macro(LibCurlFetchInstall LIBCURL_VERSION)
     UPDATE_COMMAND ""
     DOWNLOAD_EXTRACT_TIMESTAMP true
   )
+  include_directories(${LIBCURL_INSTALL_DIR}/include)
 endmacro(LibCurlFetchInstall)
 
 function(LinkAndIncludeLibCurlToExecutable NAME_EXE)

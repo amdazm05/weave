@@ -17,6 +17,7 @@ macro(LibHIREDIS HIREDIS_VERSION)
     INSTALL_DIR ${HIREDIS_INSTALL_DIR}
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
   )
+  include_directories(${HIREDIS_INSTALL_DIR}/usr/local/include)
 endmacro(LibHIREDIS)
 
 function(LinkAndIncludeHiredisToExecutable NAME_EXE)

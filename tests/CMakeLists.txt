@@ -17,6 +17,10 @@ LinkAndIncludeHiredisToExecutable(004-hiredis_dep_test)
 CompileTestFile(005-spdlog_dep_test ${CMAKE_SOURCE_DIR}/tests/005-spdlog_dep_test.cc)
 LinkAndIncludespdlogToExecutable(005-spdlog_dep_test)
 
+# TODO restructure this
+CompileTestFile(006-http_uri_tests ${CMAKE_SOURCE_DIR}/tests/006-http_uri_tests.cc)
+target_link_libraries(006-http_uri_tests PRIVATE ${PROJECT_NAME})
+
 # Dependancy Tests
 add_test(NAME 001-catch2_dep_test
          COMMAND 001-catch2_dep_test)
@@ -28,3 +32,5 @@ add_test(NAME 004-hiredis_dep_test
          COMMAND 004-hiredis_dep_test)
 add_test(NAME 005-spdlog_dep_test
          COMMAND 005-spdlog_dep_test)
+add_test(NAME 006-http_uri_tests
+         COMMAND 006-http_uri_tests)

@@ -80,7 +80,7 @@ namespace weave
     public:
         constexpr UriHandleCT(uri_t uri) : _uri(uri)
         {
-            split(_uri, protocol, authority, path);
+            split(_uri, protocol, authority, path,query);
         }
 
         constexpr UriHandleCT(UriHandleCT &&) = default;
@@ -89,14 +89,14 @@ namespace weave
         constexpr void update(uri_t uri)
         {
             _uri = uri;
-            split(_uri, protocol, authority, path);
+            split(_uri, protocol, authority, path,query);
         }
         ~UriHandleCT() = default;
 
     private:
         static constexpr void split(
             uri_t uri, protocol_t &protocol, authority_t &authority,
-            path_t &path)
+            path_t &path, query_t &query)
         {
             if (uri == "")
                 return;
@@ -118,7 +118,15 @@ namespace weave
 				uri.find("/",index_hostname)-index_hostname-1);
 	    else 
 		authority.port = "";
-
+	    auto port_end_index = uri.find("/",index_hostname);	    
+	    path = uri.substr(port_end_index,
+			    uri.find("?")-port_end_index);
+	    auto query_start_index = uri.find("?");
+            if(query_start_index!=uri.npos)
+	        query = uri.substr(query_start_index+1,
+           		    uri.find("#")-query_start_index-1);
+	    else 
+		query = "";
 	}
     private:
         uri_t _uri;
@@ -126,6 +134,7 @@ namespace weave
         protocol_t protocol;
         authority_t authority;
         path_t path;
+    	query_t query;
     };
 
     class HttpClient

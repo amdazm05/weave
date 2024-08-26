@@ -77,10 +77,12 @@ namespace weave
         using path_t = std::string_view;
         using query_t = std::string_view;
         using port_t = std::uint16_t;
+	using fragment_t = std::string_view;
     public:
-        constexpr UriHandleCT(uri_t uri) : _uri(uri),port(weave_utils::constexpr_stoi<port_t>(authority.port))
+        constexpr UriHandleCT(uri_t uri) : 
+		_uri(uri),port(weave_utils::constexpr_stoi<port_t>(authority.port))
         {
-            split(_uri, protocol, authority, path,query,port);
+            split(_uri, protocol, authority, path,query,port,fragment);
         }
 
         constexpr UriHandleCT(UriHandleCT &&) = default;
@@ -89,14 +91,18 @@ namespace weave
         constexpr void update(uri_t uri)
         {
             _uri = uri;
-            split(_uri, protocol, authority, path,query,port);
+            split(_uri, protocol, authority, path,query,port,fragment);
         }
         ~UriHandleCT() = default;
 
     private:
-        static constexpr void split(
+        //Design Goals here:
+	//[protocol:][//authority:port][/path][?query][#fragment]
+	//The intention here is to split the basic components of a URI here
+	//A seperate class adapter might be need to have this data feeded into
+	static constexpr void split(
             uri_t uri, protocol_t &protocol, authority_t &authority,
-            path_t &path, query_t &query,port_t &port)
+            path_t &path, query_t &query,port_t &port,fragment_t &fragment)
         {
             if (uri == "")
                 return;
@@ -119,17 +125,32 @@ namespace weave
                     uri.find("/",index_hostname)-index_hostname-1);
                 port = weave_utils::constexpr_stoi<port_t>(authority.port);
             }
-            else 
-            authority.port = "";
+            else
+	    {
+            	authority.port = "";
+	    } 
             auto port_end_index = uri.find("/",index_hostname);	    
             path = uri.substr(port_end_index,
                     uri.find("?")-port_end_index);
             auto query_start_index = uri.find("?");
-                if(query_start_index!=uri.npos)
+            if(query_start_index!=uri.npos)
+	    {
                 query = uri.substr(query_start_index+1,
                         uri.find("#")-query_start_index-1);
+	    }
             else 
-            query = "";
+	    {
+		query = "";
+	    }
+	    auto fragment_start_index = uri.find("#");
+	    if(fragment_start_index!= uri.npos)
+	    {   
+	    	fragment = uri.substr(uri.find("#")+1,uri.npos-1);
+	    }
+	    else
+	    {
+		fragment = "";
+	    }
         }
     private:
         uri_t _uri;
@@ -139,6 +160,7 @@ namespace weave
         path_t path;
     	query_t query;
         port_t port;
+	fragment_t fragment;
     };
 
     class HttpClient

@@ -18,4 +18,5 @@ TEST_CASE("http-uri-protocol-test","[single-file]")
     REQUIRE( handle4.authority.port=="9000");
     REQUIRE( handle4.path=="/path_to_something/home");
     REQUIRE( handle4.query=="param=value1,para=value2");
+    REQUIRE( handle4.port==9000);
 }

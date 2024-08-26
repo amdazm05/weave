@@ -2,6 +2,7 @@
 #define _WEAVE_HTTP_CLITN
 
 #include "weave/weave_engine.hpp"
+#include "weave_utils/compile_time.tpp"
 #include "weave_ds/const_expr_map.tpp"
 #include <type_traits>
 #include <unordered_map>
@@ -18,7 +19,7 @@ namespace weave
      *      Error Handling
      ***/
 
-    using port_t = int;
+    using port_t = std::uint16_t;
     /****
      *      Http = 80: The standard port number for the HTTP
      *               (Hypertext Transfer Protocol) is 80.
@@ -35,7 +36,6 @@ namespace weave
     {
         Http = 80,
         Https = 443,
-        Unknown = -1,
     };
 
     static constexpr std::array<std::pair<std::string_view, protocol_t>, 3>
@@ -76,11 +76,11 @@ namespace weave
         using uri_t = std::string_view;
         using path_t = std::string_view;
         using query_t = std::string_view;
-
+        using port_t = std::uint16_t;
     public:
-        constexpr UriHandleCT(uri_t uri) : _uri(uri)
+        constexpr UriHandleCT(uri_t uri) : _uri(uri),port(weave_utils::constexpr_stoi<port_t>(authority.port))
         {
-            split(_uri, protocol, authority, path,query);
+            split(_uri, protocol, authority, path,query,port);
         }
 
         constexpr UriHandleCT(UriHandleCT &&) = default;
@@ -89,14 +89,14 @@ namespace weave
         constexpr void update(uri_t uri)
         {
             _uri = uri;
-            split(_uri, protocol, authority, path,query);
+            split(_uri, protocol, authority, path,query,port);
         }
         ~UriHandleCT() = default;
 
     private:
         static constexpr void split(
             uri_t uri, protocol_t &protocol, authority_t &authority,
-            path_t &path, query_t &query)
+            path_t &path, query_t &query,port_t &port)
         {
             if (uri == "")
                 return;
@@ -114,20 +114,23 @@ namespace weave
             auto auth_str = uri.substr(offset_to_auth,index_hostname-offset_to_auth);
             authority.host = auth_str;
             if(check_type_hostname!=uri.npos)
+            {
                 authority.port = uri.substr(index_hostname+1,
-				uri.find("/",index_hostname)-index_hostname-1);
-	    else 
-		authority.port = "";
-	    auto port_end_index = uri.find("/",index_hostname);	    
-	    path = uri.substr(port_end_index,
-			    uri.find("?")-port_end_index);
-	    auto query_start_index = uri.find("?");
-            if(query_start_index!=uri.npos)
-	        query = uri.substr(query_start_index+1,
-           		    uri.find("#")-query_start_index-1);
-	    else 
-		query = "";
-	}
+                    uri.find("/",index_hostname)-index_hostname-1);
+                port = weave_utils::constexpr_stoi<port_t>(authority.port);
+            }
+            else 
+            authority.port = "";
+            auto port_end_index = uri.find("/",index_hostname);	    
+            path = uri.substr(port_end_index,
+                    uri.find("?")-port_end_index);
+            auto query_start_index = uri.find("?");
+                if(query_start_index!=uri.npos)
+                query = uri.substr(query_start_index+1,
+                        uri.find("#")-query_start_index-1);
+            else 
+            query = "";
+        }
     private:
         uri_t _uri;
     public:
@@ -135,6 +138,7 @@ namespace weave
         authority_t authority;
         path_t path;
     	query_t query;
+        port_t port;
     };
 
     class HttpClient

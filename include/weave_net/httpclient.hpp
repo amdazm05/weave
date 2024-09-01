@@ -162,7 +162,26 @@ namespace weave
         port_t port;
 	fragment_t fragment;
     };
-
+    //Justification for string builders in compile time
+    //Emphasis on performance here, code unrolling size is not
+    //the design goal at this moment
+    template <int status_code,std::string_view status_message,
+	     size_t header_count>
+    class ResponseCT
+    {
+    private:
+	    static constexpr std::string_view version = "HTTP/1.1";
+    	    std::array<std::pair<std::string_view,std::string_view>, 3>
+      		response_headers;
+	    std::string_view body;
+    public:
+ 	    constexpr Response(const std::array<std::pair<std::string_view,
+			    std::string_view> headers,header_count>,
+			    const std::string_view body)
+	    : response_headers(headers),body(body)
+	    {}
+	    //To decide further functionality
+    };
     class HttpClient
     {
     public:

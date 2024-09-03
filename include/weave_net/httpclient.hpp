@@ -165,22 +165,28 @@ namespace weave
     //Justification for string builders in compile time
     //Emphasis on performance here, code unrolling size is not
     //the design goal at this moment
-    template <int status_code,std::string_view status_message,
+    template <const char * status_code,const char * status_message,
 	     size_t header_count>
     class ResponseCT
     {
     private:
 	    static constexpr std::string_view version = "HTTP/1.1";
-    	    std::array<std::pair<std::string_view,std::string_view>, 3>
+	    static constexpr std::string_view strnl_ = " \n";
+        static constexpr std::string_view str_ = " ";
+        static constexpr std::string_view str1{status_message};
+    	    std::array<std::pair<std::string_view,std::string_view>, header_count>
       		response_headers;
 	    std::string_view body;
     public:
- 	    constexpr Response(const std::array<std::pair<std::string_view,
-			    std::string_view> headers,header_count>,
-			    const std::string_view body)
-	    : response_headers(headers),body(body)
-	    {}
 	    //To decide further functionality
+        constexpr ResponseCT(const std::array<std::pair<std::string_view, 
+            std::string_view>, header_count>& headers, const std::string_view bodyContent)
+        : response_headers(headers), body(bodyContent) {}
+
+        constexpr std::string_view to_string() const {
+            auto str =  weave_utils::join_v<version,str_,str1>;
+            return str;
+        }
     };
     class HttpClient
     {

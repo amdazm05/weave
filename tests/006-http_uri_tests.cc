@@ -3,8 +3,6 @@
 
 using namespace weave;
 
-//testing
-
 TEST_CASE("http-uri-protocol-test","[single-file]")
 {
     constexpr UriHandleCT handle2{"https://www.testurl.com/"};

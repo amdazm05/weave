@@ -25,6 +25,10 @@ target_link_libraries(007-opencv_dep_test PRIVATE ${OpenCV_LIBS})
 CompileTestFile(006-http_uri_tests ${CMAKE_SOURCE_DIR}/tests/006-http_uri_tests.cc)
 target_link_libraries(006-http_uri_tests PRIVATE ${PROJECT_NAME})
 
+CompileTestFile(008-http-response-header-ct-test 
+	${CMAKE_SOURCE_DIR}/tests/008-http-response-header-ct-test.cc)
+target_link_libraries(008-http-response-header-ct-test PRIVATE ${PROJECT_NAME})
+
 # Dependancy Tests
 add_test(NAME 001-catch2_dep_test
          COMMAND 001-catch2_dep_test)

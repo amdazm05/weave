@@ -166,7 +166,7 @@ namespace weave
     //Emphasis on performance here, code unrolling size is not
     //the design goal at this moment
     template <const char *status_code, const char *status_message, std::size_t header_count>
-        class ResponseCT {
+        class HttpProtocolEntityCompileTime {
         private:
             static constexpr std::string_view version = "HTTP/1.1";
             static constexpr std::string_view strnl_ = " \n";
@@ -182,7 +182,7 @@ namespace weave
                     data[i++]=c;
             }
         public:
-            constexpr ResponseCT(const std::array<std::pair<std::string_view, std::string_view>, header_count>& headers)
+            constexpr HttpProtocolEntityCompileTime(const std::array<std::pair<std::string_view, std::string_view>, header_count>& headers)
             : arr_(headers)
             {
                 append_arr(version);

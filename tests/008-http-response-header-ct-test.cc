@@ -11,7 +11,7 @@ TEST_CASE("http-response-header-tests","[single-file]")
     }};
   static constexpr  char okMessage[] = "OK";
   static constexpr  char okStatus[] = "200"; 
-  ResponseCT<okMessage,okStatus,headers.size()> ct(headers);
+  HttpProtocolEntityCompileTime<okMessage,okStatus,headers.size()> ct(headers);
   //Expected output
   std::string_view s = "HTTP/1.1 200 OK \nContent-Type:text/plain \nCache-Control:no-cache \n";
   REQUIRE(ct.to_string()==s);

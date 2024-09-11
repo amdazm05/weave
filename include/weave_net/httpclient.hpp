@@ -2,6 +2,7 @@
 #define _WEAVE_HTTP_CLITN
 
 #include "weave/weave_engine.hpp"
+#include "weave_utils/compile_time.tpp"
 #include "weave_ds/const_expr_map.tpp"
 #include <type_traits>
 #include <unordered_map>
@@ -18,7 +19,7 @@ namespace weave
      *      Error Handling
      ***/
 
-    using port_t = int;
+    using port_t = std::uint16_t;
     /****
      *      Http = 80: The standard port number for the HTTP
      *               (Hypertext Transfer Protocol) is 80.
@@ -35,7 +36,6 @@ namespace weave
     {
         Http = 80,
         Https = 443,
-        Unknown = -1,
     };
 
     static constexpr std::array<std::pair<std::string_view, protocol_t>, 3>
@@ -76,11 +76,13 @@ namespace weave
         using uri_t = std::string_view;
         using path_t = std::string_view;
         using query_t = std::string_view;
-
+        using port_t = std::uint16_t;
+	using fragment_t = std::string_view;
     public:
-        constexpr UriHandleCT(uri_t uri) : _uri(uri)
+        constexpr UriHandleCT(uri_t uri) : 
+		_uri(uri),port(weave_utils::constexpr_stoi<port_t>(authority.port))
         {
-            split(_uri, protocol, authority, path,query);
+            split(_uri, protocol, authority, path,query,port,fragment);
         }
 
         constexpr UriHandleCT(UriHandleCT &&) = default;
@@ -89,14 +91,18 @@ namespace weave
         constexpr void update(uri_t uri)
         {
             _uri = uri;
-            split(_uri, protocol, authority, path,query);
+            split(_uri, protocol, authority, path,query,port,fragment);
         }
         ~UriHandleCT() = default;
 
     private:
-        static constexpr void split(
+        //Design Goals here:
+	//[protocol:][//authority:port][/path][?query][#fragment]
+	//The intention here is to split the basic components of a URI here
+	//A seperate class adapter might be need to have this data feeded into
+	static constexpr void split(
             uri_t uri, protocol_t &protocol, authority_t &authority,
-            path_t &path, query_t &query)
+            path_t &path, query_t &query,port_t &port,fragment_t &fragment)
         {
             if (uri == "")
                 return;
@@ -114,20 +120,38 @@ namespace weave
             auto auth_str = uri.substr(offset_to_auth,index_hostname-offset_to_auth);
             authority.host = auth_str;
             if(check_type_hostname!=uri.npos)
+            {
                 authority.port = uri.substr(index_hostname+1,
-				uri.find("/",index_hostname)-index_hostname-1);
-	    else 
-		authority.port = "";
-	    auto port_end_index = uri.find("/",index_hostname);	    
-	    path = uri.substr(port_end_index,
-			    uri.find("?")-port_end_index);
-	    auto query_start_index = uri.find("?");
+                    uri.find("/",index_hostname)-index_hostname-1);
+                port = weave_utils::constexpr_stoi<port_t>(authority.port);
+            }
+            else
+	    {
+            	authority.port = "";
+	    } 
+            auto port_end_index = uri.find("/",index_hostname);	    
+            path = uri.substr(port_end_index,
+                    uri.find("?")-port_end_index);
+            auto query_start_index = uri.find("?");
             if(query_start_index!=uri.npos)
-	        query = uri.substr(query_start_index+1,
-           		    uri.find("#")-query_start_index-1);
-	    else 
+	    {
+                query = uri.substr(query_start_index+1,
+                        uri.find("#")-query_start_index-1);
+	    }
+            else 
+	    {
 		query = "";
-	}
+	    }
+	    auto fragment_start_index = uri.find("#");
+	    if(fragment_start_index!= uri.npos)
+	    {   
+	    	fragment = uri.substr(uri.find("#")+1,uri.npos-1);
+	    }
+	    else
+	    {
+		fragment = "";
+	    }
+        }
     private:
         uri_t _uri;
     public:
@@ -135,8 +159,52 @@ namespace weave
         authority_t authority;
         path_t path;
     	query_t query;
+        port_t port;
+	fragment_t fragment;
     };
-
+    //Justification for string builders in compile time
+    //Emphasis on performance here, code unrolling size is not
+    //the design goal at this moment
+    template <const char *status_code, const char *status_message, std::size_t header_count>
+        class HttpProtocolEntityCompileTime {
+        private:
+            static constexpr std::string_view version = "HTTP/1.1";
+            static constexpr std::string_view strnl_ = " \n";
+            static constexpr std::string_view str_ = " ";
+            static constexpr std::string_view str1{status_message};
+            std::string_view response_;
+            std::array<std::pair<std::string_view, std::string_view>, header_count> arr_;
+            std::array<char,sizeof(arr_)+2*header_count+version.size()+strnl_.size()+str1.size()> data;
+            int i=0;
+            constexpr void append_arr(const std::string_view s)
+            {
+                for(auto & c: s)
+                    data[i++]=c;
+            }
+        public:
+            constexpr HttpProtocolEntityCompileTime(const std::array<std::pair<std::string_view, std::string_view>, header_count>& headers)
+            : arr_(headers)
+            {
+                append_arr(version);
+                append_arr(str_);
+                append_arr(str1);
+                append_arr(str_);
+                append_arr(std::string_view(status_code));
+                append_arr(strnl_);
+                for(auto & [key,val]:arr_)
+                {
+                    append_arr(key);
+                    append_arr(":");
+                    append_arr(val);
+                    append_arr(strnl_); 
+                }
+            }
+            
+            constexpr std::string_view to_string() const 
+            {
+                return std::string_view(data.data(),i);
+            }
+        };
     class HttpClient
     {
     public:

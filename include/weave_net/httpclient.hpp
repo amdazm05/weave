@@ -165,29 +165,46 @@ namespace weave
     //Justification for string builders in compile time
     //Emphasis on performance here, code unrolling size is not
     //the design goal at this moment
-    template <const char * status_code,const char * status_message,
-	     size_t header_count>
-    class ResponseCT
-    {
-    private:
-	    static constexpr std::string_view version = "HTTP/1.1";
-	    static constexpr std::string_view strnl_ = " \n";
-        static constexpr std::string_view str_ = " ";
-        static constexpr std::string_view str1{status_message};
-    	    std::array<std::pair<std::string_view,std::string_view>, header_count>
-      		response_headers;
-	    std::string_view body;
-    public:
-	    //To decide further functionality
-        constexpr ResponseCT(const std::array<std::pair<std::string_view, 
-            std::string_view>, header_count>& headers, const std::string_view bodyContent)
-        : response_headers(headers), body(bodyContent) {}
-
-        constexpr std::string_view to_string() const {
-            auto str =  weave_utils::join_v<version,str_,str1>;
-            return str;
-        }
-    };
+    template <const char *status_code, const char *status_message, std::size_t header_count>
+        class ResponseCT {
+        private:
+            static constexpr std::string_view version = "HTTP/1.1";
+            static constexpr std::string_view strnl_ = " \n";
+            static constexpr std::string_view str_ = " ";
+            static constexpr std::string_view str1{status_message};
+            std::string_view response_;
+            std::array<std::pair<std::string_view, std::string_view>, header_count> arr_;
+            std::array<char,sizeof(arr_)+2*header_count+version.size()+strnl_.size()+str1.size()> data;
+            int i=0;
+            constexpr void append_arr(const std::string_view s)
+            {
+                for(auto & c: s)
+                    data[i++]=c;
+            }
+        public:
+            constexpr ResponseCT(const std::array<std::pair<std::string_view, std::string_view>, header_count>& headers)
+            : arr_(headers)
+            {
+                append_arr(version);
+                append_arr(str_);
+                append_arr(str1);
+                append_arr(str_);
+                append_arr(std::string_view(status_code));
+                append_arr(strnl_);
+                for(auto & [key,val]:arr_)
+                {
+                    append_arr(key);
+                    append_arr(":");
+                    append_arr(val);
+                    append_arr(strnl_); 
+                }
+            }
+            
+            constexpr std::string_view to_string() const 
+            {
+                return std::string_view(data.data(),i);
+            }
+        };
     class HttpClient
     {
     public:

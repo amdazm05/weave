@@ -75,6 +75,22 @@ namespace weave_utils
     };
     template <std::string_view const&... Strs>
     static constexpr auto join_v = join<Strs...>::value;
+
+    static constexpr size_t compute_string_sizes(std::string_view key, std::string_view value)
+    {
+        return key.length() + value.length();
+    }
+
+    template<size_t N>
+    static constexpr size_t compute_string_len_in_array(
+        const std::array<std::pair<std::string_view,std::string_view>,N> & arr)
+    {
+        size_t s =0;
+        for(auto & [key,val]:arr)
+            s+=compute_string_sizes(key,val);
+        return s;
+    }
+    
 }
 
 #endif //_WEAVE_COMPILE_TIME

@@ -17,18 +17,19 @@ namespace weave
     class WeaveEngine
     {
         private:
-            CurlHandler &curl_handle;
+            CurlHandler& _curlHandler;
+        private:
             WeaveEngine();
         public:
-            [[noreturn]]static void init();
             static WeaveEngine &  get_context();
             WeaveEngine(WeaveEngine &&)=delete;
             WeaveEngine(const WeaveEngine &)=delete;
             void operator=(WeaveEngine const &)=delete;
             void operator=(WeaveEngine &&)=delete;
+            CurlHandler & get_curl_handle();
             ~WeaveEngine();
         private:
-            bool is_init;
+            static WeaveEngine * inst;
     };
 }
 

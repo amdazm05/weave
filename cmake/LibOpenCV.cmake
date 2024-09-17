@@ -29,7 +29,7 @@ macro(LibOpenCV OPENCV_VERSION)
         SOURCE_DIR ${OPENCV_SOURCE_DIR}
         BINARY_DIR ${OPENCV_BUILD_DIR}
         CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
-                   -DBUILD_SHARED_LIBS=OFF # Remove if you want shared libraries
+                   -DBUILD_SHARED_LIBS=OFF
                    -DBUILD_opencv_world=OFF
                    -DBUILD_EXAMPLES=OFF
                    -DBUILD_TESTS=OFF
@@ -37,6 +37,8 @@ macro(LibOpenCV OPENCV_VERSION)
                    -DOPENCV_ENABLE_NONFREE=ON
                    -DOPENCV_EXTRA_MODULES_PATH=${OPENCV_CONTRIB_DIR}/modules
                    -DCMAKE_INSTALL_PREFIX=${OPENCV_INSTALL_DIR}
+                   -DPYTHON_EXECUTABLE=$(which python3) # Explicit Python3 path
+                   -Wno-dev
         INSTALL_COMMAND make install
         STEP_TARGETS install
     )

@@ -26,7 +26,7 @@ LibCurlFetchInstall("8_8_0")
 LibHIREDIS("v1.2.0")
 FetchCatch2("3.6.0")
 Libspdlog("v1.14.1")
-LibOpenCV("4.7.0")
+LibOpenCV("4.9.0")
 
 file( GLOB WEAVE_SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*/*.cc ${PROJECT_SOURCE_DIR}/src/*/*.cpp)
 add_library(${PROJECT_NAME} STATIC ${WEAVE_SOURCE_FILES})

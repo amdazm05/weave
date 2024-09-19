@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 
 include(ExternalProject)
 
-# Macro to building and install OpenCV statically
+# Macro to build and install OpenCV statically
 macro(LibOpenCV OPENCV_VERSION)
     # Set directories for source, build, and install
     set(OPENCV_SOURCE_DIR ${CMAKE_BINARY_DIR}/opencv_source)
@@ -21,24 +21,24 @@ macro(LibOpenCV OPENCV_VERSION)
         INSTALL_COMMAND ""
     )
 
-    # ExternalProject to handle OpenCV
+    # ExternalProject to handle OpenCV from tar.gz release
     ExternalProject_Add(opencv
         PREFIX ${CMAKE_BINARY_DIR}/opencv_project
-        GIT_REPOSITORY https://github.com/opencv/opencv.git
-        GIT_TAG ${OPENCV_VERSION}
+        URL https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE  # Ensures extracted files use current timestamp
         SOURCE_DIR ${OPENCV_SOURCE_DIR}
         BINARY_DIR ${OPENCV_BUILD_DIR}
         CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
-                   -DBUILD_SHARED_LIBS=OFF
-                   -DBUILD_opencv_world=OFF
-                   -DBUILD_EXAMPLES=OFF
-                   -DBUILD_TESTS=OFF
-                   -DBUILD_PERF_TESTS=OFF
-                   -DOPENCV_ENABLE_NONFREE=ON
-                   -DOPENCV_EXTRA_MODULES_PATH=${OPENCV_CONTRIB_DIR}/modules
-                   -DCMAKE_INSTALL_PREFIX=${OPENCV_INSTALL_DIR}
-                   -DPYTHON_EXECUTABLE=$(which python3) # Explicit Python3 path
-                   -Wno-dev
+                -DBUILD_SHARED_LIBS=OFF
+                -DBUILD_opencv_world=OFF
+                -DBUILD_EXAMPLES=OFF
+                -DBUILD_TESTS=OFF
+                -DBUILD_PERF_TESTS=OFF
+                -DOPENCV_ENABLE_NONFREE=ON
+                -DOPENCV_EXTRA_MODULES_PATH=${OPENCV_CONTRIB_DIR}/modules
+                -DCMAKE_INSTALL_PREFIX=${OPENCV_INSTALL_DIR}
+                -DPYTHON_EXECUTABLE=/usr/bin/python3
+                -Wno-dev
         INSTALL_COMMAND make install
         STEP_TARGETS install
     )

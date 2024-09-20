@@ -4,7 +4,8 @@ using namespace weave;
 
 WeaveEngine::WeaveEngine() : _curlHandler(CurlHandler::instance())
 {
-     
+    spdlog::set_level(spdlog::level::info);
+    spdlog::log(spdlog::level::info, "Weave Engine Initialised");
 }
 
 WeaveEngine::~WeaveEngine()

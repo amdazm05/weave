@@ -51,7 +51,6 @@ void CurlHandler::set_headers(const std::vector<std::string_view>&& headers)
     for(const auto & header:headers)
     {
         header_ptr = curl_slist_append(header_ptr,header.data());    
-        if(header_ptr) spdlog::info("Not null");
     }
     CURLcode res = curl_easy_setopt(_curl_handle.get(),CURLOPT_HTTPHEADER,header_ptr);
     ErrorReporter.check_error(res);

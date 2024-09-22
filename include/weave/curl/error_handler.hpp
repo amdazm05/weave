@@ -5,6 +5,7 @@
 #include <string_view>
 #include <source_location>
 #include <spdlog/spdlog.h>
+#include <exception>
 
 namespace weave_curl
 {
@@ -17,8 +18,10 @@ namespace weave_curl
             /// @brief gets us the last error
             /// @return 
             std::string_view operator()();
-            void check_error(CURLcode & code, 
-                const std::source_location& location);
+            void check_error(CURLcode &code,
+                            const std::source_location &location = 
+                             std::source_location::current());
+
             std::string_view get_last_error();
     };
 }

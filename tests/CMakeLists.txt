@@ -37,6 +37,10 @@ CompileTestFile(010-curlhandler-request-tests
 	${CMAKE_SOURCE_DIR}/tests/010-curlhandler-request-tests.cc)
 target_link_libraries(010-curlhandler-request-tests PRIVATE ${PROJECT_NAME})
 
+CompileTestFile(011-curl-set-headers
+	${CMAKE_SOURCE_DIR}/tests/011-curl-set-headers.cc)
+target_link_libraries(011-curl-set-headers PRIVATE ${PROJECT_NAME})
+
 # Dependancy Tests
 add_test(NAME 001-catch2_dep_test
          COMMAND 001-catch2_dep_test)

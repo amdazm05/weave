@@ -32,11 +32,6 @@ std::string CurlHandler::perform_request()
     res = curl_easy_setopt(_curl_handle.get(), CURLOPT_WRITEFUNCTION,
         weave_callbacks::WriteCallback);
     ErrorReporter.check_error(res);
-    if(res!=CURLE_OK)
-    {
-        spdlog::error("curl_handler:request to url failed {}", curl_easy_strerror(res));
-        return ""; // or handle the error as needed
-    }
     res = curl_easy_setopt(_curl_handle.get(), CURLOPT_WRITEDATA, &response_buffer);
     ErrorReporter.check_error(res);
     res = curl_easy_perform(_curl_handle.get());
@@ -53,6 +48,18 @@ void CurlHandler::set_headers(const std::vector<std::string_view>&& headers)
         header_ptr = curl_slist_append(header_ptr,header.data());    
     }
     CURLcode res = curl_easy_setopt(_curl_handle.get(),CURLOPT_HTTPHEADER,header_ptr);
+    ErrorReporter.check_error(res);
+}
+
+void CurlHandler::set_timeout(size_t timeout)
+{
+    CURLcode res = curl_easy_setopt(_curl_handle.get(),CURLOPT_TIMEOUT_MS,timeout);
+    ErrorReporter.check_error(res);
+}
+
+void CurlHandler::set_user_agent(std::string_view agent)
+{
+    CURLcode res = curl_easy_setopt(_curl_handle.get(),CURLOPT_USERAGENT,agent);
     ErrorReporter.check_error(res);
 }
 

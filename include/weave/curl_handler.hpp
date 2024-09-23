@@ -8,7 +8,6 @@
 #include <spdlog/spdlog.h>
 #include <weave/curl/callbacks.hpp>
 #include <weave/curl/error_handler.hpp>
-
 class CurlHandler 
 {
     private:
@@ -24,7 +23,7 @@ class CurlHandler
         void set_headers(const std::vector<std::string_view> && headers);
         void set_post_fields(std::string_view url);
         std::string perform_request();
-        void set_timeout(long timeout);
+        void set_timeout(size_t timeout);
         void set_user_agent(std::string_view url);
         void set_follow_redirects(bool enable);
         std::string get_last_error();

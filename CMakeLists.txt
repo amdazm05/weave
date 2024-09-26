@@ -28,7 +28,7 @@ FetchCatch2("3.6.0")
 Libspdlog("v1.14.1")
 LibOpenCV("4.10.0")
 
-file( GLOB WEAVE_SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*/*.cc ${PROJECT_SOURCE_DIR}/src/*/*.cpp)
+file( GLOB_RECURSE WEAVE_SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*/*.cc ${PROJECT_SOURCE_DIR}/src/*/*.cpp)
 add_library(${PROJECT_NAME} STATIC ${WEAVE_SOURCE_FILES})
 LinkAndIncludeLibCurlToExecutable(weave)
 LinkAndIncludeHiredisToExecutable(weave)

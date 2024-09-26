@@ -15,7 +15,7 @@ macro(LibOpenSSL OPENSSL_VERSION)
             --openssldir=${OPENSSL_INSTALL_DIR}
         BUILD_COMMAND make
         TEST_COMMAND ""
-        INSTALL_COMMAND make install
+        INSTALL_COMMAND make install_sw
         INSTALL_DIR ${OPENSSL_INSTALL_DIR}
         UPDATE_COMMAND ""
         DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -31,3 +31,5 @@ endmacro(LinkAndIncludeOpenSSLToExecutable)
 # https://github.com/msys2/MINGW-packages/blob/master/mingw-w64-openssl/PKGBUILD'
 # https://github.com/openssl/openssl/discussions/23469 for 3.3.1
 # https://github.com/openssl/openssl/issues/5557
+# https://github.com/anthonybilinski/qTox/commit/602654f73fcf93d82022b0595f23c39eaf0f8078
+# unecessary to build docs here

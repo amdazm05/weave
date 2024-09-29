@@ -32,6 +32,8 @@ file( GLOB_RECURSE WEAVE_SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*/*.cc ${PROJECT
 add_library(${PROJECT_NAME} STATIC ${WEAVE_SOURCE_FILES})
 LinkAndIncludeLibCurlToExecutable(weave)
 LinkAndIncludeHiredisToExecutable(weave)
+LinkAndIncludespdlogToExecutable(weave)
+LinkAndIncludeOpenCVToExecutable(weave)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 # cmake_print_variables(UNIT_TESTS)

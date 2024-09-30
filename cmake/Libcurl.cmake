@@ -23,6 +23,8 @@ macro(LibCurlFetchInstall LIBCURL_VERSION)
 endmacro(LibCurlFetchInstall)
 
 function(LinkAndIncludeLibCurlToExecutable NAME_EXE)
-  target_link_libraries(${NAME_EXE} PRIVATE ${LIBCURL_INSTALL_DIR}/lib/libcurl.a ${OPENSSL_INSTALL_DIR}/lib64/libssl.a ${OPENSSL_INSTALL_DIR}/lib64/libcrypto.a )
+  target_link_libraries(${NAME_EXE} PRIVATE ${LIBCURL_INSTALL_DIR}/lib/libcurl.a 
+    ${OPENSSL_INSTALL_DIR}/lib/libssl.a 
+    ${OPENSSL_INSTALL_DIR}/lib/libcrypto.a )
   target_include_directories(${NAME_EXE} PRIVATE ${LIBCURL_INSTALL_DIR}/include)
 endfunction(LinkAndIncludeLibCurlToExecutable)

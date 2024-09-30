@@ -28,7 +28,7 @@ macro(LibOpenSSL OPENSSL_VERSION)
 endmacro(LibOpenSSL)
 
 macro(LinkAndIncludeOpenSSLToExecutable NAME_EXE)
-  target_link_libraries(${NAME_EXE} PRIVATE ${OPENSSL_INSTALL_DIR}/lib64/libssl.a ${OPENSSL_INSTALL_DIR}/lib64/libcrypto.a)
+  target_link_libraries(${NAME_EXE} PRIVATE ${CMAKE_BINARY_DIR}/openssl/lib/libssl.a ${CMAKE_BINARY_DIR}/openssl/lib/libcrypto.a)
   target_include_directories(${NAME_EXE} PRIVATE ${CMAKE_BINARY_DIR}/openssl/include)
 endmacro(LinkAndIncludeOpenSSLToExecutable)
 

@@ -9,9 +9,9 @@ macro(LibCurlFetchInstall LIBCURL_VERSION)
     SOURCE_DIR ${LIBCURL_SOURCE_DIR}
     URL https://github.com/curl/curl/releases/download/curl-${LIBCURL_VERSION}/curl-8.8.0.tar.gz
     USES_TERMINAL_DOWNLOAD TRUE
-    CONFIGURE_COMMAND ${LIBCURL_SOURCE_DIR}/configure  # Separate command for configure
+    CONFIGURE_COMMAND ${LIBCURL_SOURCE_DIR}/configure
       --prefix=${LIBCURL_INSTALL_DIR}
-      --with-openssl=${CMAKE_BINARY_DIR}/openssl
+      --with-openssl=${OPENSSL_INSTALL_DIR}
     BUILD_COMMAND make
     TEST_COMMAND ""
     INSTALL_COMMAND make install
@@ -23,6 +23,8 @@ macro(LibCurlFetchInstall LIBCURL_VERSION)
 endmacro(LibCurlFetchInstall)
 
 function(LinkAndIncludeLibCurlToExecutable NAME_EXE)
-  target_link_libraries(${NAME_EXE} PRIVATE ${LIBCURL_INSTALL_DIR}/lib/libcurl.a ${OPENSSL_INSTALL_DIR}/lib64/libssl.a ${OPENSSL_INSTALL_DIR}/lib64/libcrypto.a )
+  target_link_libraries(${NAME_EXE} PRIVATE ${LIBCURL_INSTALL_DIR}/lib/libcurl.a 
+    ${OPENSSL_INSTALL_DIR}/lib/libssl.a 
+    ${OPENSSL_INSTALL_DIR}/lib/libcrypto.a )
   target_include_directories(${NAME_EXE} PRIVATE ${LIBCURL_INSTALL_DIR}/include)
 endfunction(LinkAndIncludeLibCurlToExecutable)

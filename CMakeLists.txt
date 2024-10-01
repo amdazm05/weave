@@ -30,6 +30,7 @@ LibOpenCV("4.10.0")
 
 file( GLOB_RECURSE WEAVE_SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*/*.cc ${PROJECT_SOURCE_DIR}/src/*/*.cpp)
 add_library(${PROJECT_NAME} STATIC ${WEAVE_SOURCE_FILES})
+LinkAndIncludeOpenSSLToExecutable(weave)
 LinkAndIncludeLibCurlToExecutable(weave)
 LinkAndIncludeHiredisToExecutable(weave)
 LinkAndIncludespdlogToExecutable(weave)

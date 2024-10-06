@@ -40,6 +40,13 @@ std::string CurlHandler::perform_request()
     return response_buffer;
 }
 
+void CurlHandler::set_post_fields(std::string_view url)
+{
+    CURLcode res;
+    res=curl_easy_setopt(_curl_handle.get(), CURLOPT_POSTFIELDS, url);
+    ErrorReporter.check_error(res);
+}
+
 void CurlHandler::set_headers(const std::vector<std::string_view>&& headers)
 {
     curl_slist * header_ptr =nullptr;

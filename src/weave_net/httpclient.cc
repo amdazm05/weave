@@ -3,8 +3,13 @@ using namespace weave;
 
 HttpClient::HttpClient(WeaveEngine & engine) : engine_(engine)
 { 
-    id_ = reinterpret_cast<uint32_t>(this);
+    id_ = reinterpret_cast<uintptr_t >(this);
     spdlog::info("Initialised HTTPClient id: {}",id_);
+}
+
+HttpClient::~HttpClient()
+{
+    
 }
 
 void HttpClient::set_header(std::span<std::string_view> header_span)
@@ -20,4 +25,12 @@ std::string_view HttpClient::get(std::string_view url)
     curlhandle.set_url(url);    
     this->resbuffer_= curlhandle.perform_request();
     return {resbuffer_};
+}
+
+void HttpClient::post(std::string_view url,std::string_view payload)
+{
+    CurlHandler & curlhandle = engine_.get_curl_handle();
+    curlhandle.set_url(url);
+    curlhandle.set_post_fields(payload);
+    curlhandle.perform_request();
 }

@@ -226,8 +226,7 @@ namespace weave
     };
     class HttpClient
     {
-        int32_t id_;
-        std::string resbuffer_;
+        uintptr_t  id_;
         std::string resbuffer_;
         WeaveEngine & engine_;
     public:
@@ -239,7 +238,7 @@ namespace weave
         void receive();
         void parseResponse();
         std::string_view get(std::string_view url);
-        void post();
+        void post(std::string_view url,std::string_view payload);
         void put(); 
         void del();
     };

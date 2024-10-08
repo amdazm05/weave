@@ -7,6 +7,7 @@
 #include <type_traits>
 #include <unordered_map>
 #include <algorithm>
+#include <span>
 
 namespace weave
 {
@@ -225,12 +226,21 @@ namespace weave
     };
     class HttpClient
     {
+        uintptr_t  id_;
+        std::string resbuffer_;
+        WeaveEngine & engine_;
     public:
-        HttpClient(const WeaveEngine &engine_context);
+        HttpClient(WeaveEngine &engine_context);
+        HttpClient()=delete;
         ~HttpClient();
-
-    private:
-
+        void set_header(std::span<std::string_view> header_span); 
+        void send();
+        void receive();
+        void parseResponse();
+        std::string_view get(std::string_view url);
+        void post(std::string_view url,std::string_view payload);
+        void put(); 
+        void del();
     };
 }
 

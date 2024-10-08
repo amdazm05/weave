@@ -34,8 +34,11 @@ std::string CurlHandler::perform_request()
     ErrorReporter.check_error(res);
     res = curl_easy_setopt(_curl_handle.get(), CURLOPT_WRITEDATA, &response_buffer);
     ErrorReporter.check_error(res);
-    res = curl_easy_perform(_curl_handle.get());
-    ErrorReporter.check_error(res);
+    if(_curl_handle)
+    {
+        res = curl_easy_perform(_curl_handle.get());
+        ErrorReporter.check_error(res);
+    }
     spdlog::trace("curl_handler: response recivied {}",response_buffer);
     return response_buffer;
 }
@@ -43,7 +46,7 @@ std::string CurlHandler::perform_request()
 void CurlHandler::set_post_fields(std::string_view url)
 {
     CURLcode res;
-    res=curl_easy_setopt(_curl_handle.get(), CURLOPT_POSTFIELDS, url);
+    res=curl_easy_setopt(_curl_handle.get(), CURLOPT_POSTFIELDS, url.data());
     ErrorReporter.check_error(res);
 }
 

@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <weave_net/httpclient.hpp>
 #include <weave/weave_engine.hpp>
+#include <spdlog/spdlog.h>
 
 using namespace weave;
 
@@ -12,9 +13,14 @@ TEST_CASE("post-get-http-client","single-file")
         "Authorization: Bearer <TOKEN>",
         "User-Agent: weave"
     }};
-
+    spdlog::set_level(spdlog::level::trace);
     HttpClient httpclient(engine);
-    std::cout<<"Set Headers"<<std::endl;
     httpclient.set_header(headers);
-    std::cout<<httpclient.get("https://api.github.com/repos/amdazm05/weave/commits")<<std::endl;
+    REQUIRE(httpclient.get("https://api.github.com/repos/amdazm05/weave/commits").size()>1);
+    
+    std::array<std::string_view,1> headersp = {{"Content-Type: application/json"}};
+    std::string_view headerpost ={{ R"({"key": "value"})"}};
+    httpclient.set_header(headersp);
+    httpclient.post("http://localhost:3000",headerpost);
+
 }

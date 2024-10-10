@@ -1,16 +1,17 @@
 #include <weave/curl_handler.hpp>
-
+using namespace weave;
 CurlHandler::CurlHandler(): _curl_handle{curl_easy_init(),curl_easy_cleanup}
 {
     if (!_curl_handle) {
         spdlog::error("Failed to initialize curl");
     }
 }
-CurlHandler & CurlHandler::instance()
+
+std::shared_ptr<CurlHandler> get_context()
 {
-    static CurlHandler _inst{};
-    return _inst;
+    return shared_from_this();
 }
+
 
 void CurlHandler::set_url(std::string_view url)
 {

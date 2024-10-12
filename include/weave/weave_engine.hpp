@@ -17,8 +17,6 @@ namespace weave
     class WeaveEngine
     {
         private:
-            CurlHandler& _curlHandler;
-        private:
             WeaveEngine();
         public:
             static WeaveEngine &  get_context();
@@ -26,7 +24,6 @@ namespace weave
             WeaveEngine(const WeaveEngine &)=delete;
             void operator=(WeaveEngine const &)=delete;
             void operator=(WeaveEngine &&)=delete;
-            CurlHandler & get_curl_handle();
             ~WeaveEngine();
         private:
             static WeaveEngine * inst;

@@ -3,9 +3,6 @@
 
 TEST_CASE("singleton-context-tests","")
 {
-    weave::WeaveEngine & eng = weave::WeaveEngine::get_context(); 
-    CurlHandler & handle = eng.get_curl_handle();
-    //this is the same handle as if I want to pass it around
-    REQUIRE(&handle == &eng.get_curl_handle());
-    REQUIRE(&weave::WeaveEngine::get_context()==&eng);
+    weave::WeaveEngine & eng = weave::WeaveEngine::init(1,2);
+    REQUIRE(&weave::WeaveEngine::init(1,2)==&eng);
 }

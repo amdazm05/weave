@@ -7,14 +7,13 @@ using namespace weave;
 
 TEST_CASE("post-get-http-client","single-file")
 {
-    WeaveEngine & engine = WeaveEngine::get_context();
     std::array<std::string_view, 3> headers = {{
         "Content-Type: application/json",
         "Authorization: Bearer <TOKEN>",
         "User-Agent: weave"
     }};
     spdlog::set_level(spdlog::level::trace);
-    HttpClient httpclient(engine);
+    HttpClient httpclient;
     httpclient.set_header(headers);
     REQUIRE(httpclient.get("https://api.github.com/repos/amdazm05/weave/commits").size()>1);
     

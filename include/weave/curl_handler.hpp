@@ -9,18 +9,19 @@
 #include <weave/curl/callbacks.hpp>
 #include <weave/curl/error_handler.hpp>
 
-namespace weave
+namespace weave_curl
 {
     class CurlHandler : std::enable_shared_from_this<CurlHandler>
     {
         private:
-            CurlHandler();
-            CurlHandler &operator=(CurlHandler const &) = delete;
-            CurlHandler &operator=(CurlHandler &&) = delete;
-            std::unique_ptr<CURL,decltype(&curl_easy_cleanup)>  _curl_handle; 
+            CURL *  _curl_handle; 
             std::shared_ptr<CURLU> _url_handle;
             weave_curl::CurlErrorReporter ErrorReporter;
         public:
+            CurlHandler();
+            CurlHandler &operator=(CurlHandler const &) = delete;
+            CurlHandler &operator=(CurlHandler &&) = default;
+            void reset();
             void set_url(std::string_view url);
             void set_request_type(CURLoption requestType);
             void set_headers(const std::vector<std::string_view> && headers);

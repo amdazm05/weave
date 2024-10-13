@@ -228,10 +228,9 @@ namespace weave
     {
         uintptr_t  id_;
         std::string resbuffer_;
-        WeaveEngine & engine_;
+        weave_curl::CurlHandler curlhandle_;
     public:
-        HttpClient(WeaveEngine &engine_context);
-        HttpClient()=delete;
+        HttpClient();
         ~HttpClient();
         void set_header(std::span<std::string_view> header_span); 
         void send();

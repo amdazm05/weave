@@ -2,23 +2,20 @@
 using namespace weave;
 
 
-WeaveEngine::WeaveEngine() : _curlHandler(CurlHandler::instance())
+WeaveEngine::WeaveEngine()
 {
     spdlog::set_level(spdlog::level::info);
     spdlog::log(spdlog::level::info, "Weave Engine Initialised");
+    CURLcode err = curl_global_init(CURL_GLOBAL_ALL);
+    curl_error_reporter.check_error(err);
 }
 
 WeaveEngine::~WeaveEngine()
 {
 
 }
-WeaveEngine & WeaveEngine::get_context()
+WeaveEngine & WeaveEngine::init(size_t curlpool_size,size_t threadpool)
 {
     static WeaveEngine _inst{};
     return _inst;
-}
-
-CurlHandler & WeaveEngine::get_curl_handle()
-{
-    return _curlHandler;
 }

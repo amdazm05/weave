@@ -7,7 +7,8 @@
 #include <curl/curl.h>
 #include <hiredis/hiredis.h>
 #include <openssl/ssl.h>
-#include "curl_handler.hpp"
+#include <weave/curl/error_handler.hpp>
+#include <weave/curl_pool.hpp>
 
 namespace weave
 {
@@ -17,9 +18,11 @@ namespace weave
     class WeaveEngine
     {
         private:
+            weave_curl::CurlPool curl_pool_;
             WeaveEngine();
+            weave_curl::CurlErrorReporter curl_error_reporter;
         public:
-            static WeaveEngine &  get_context();
+            static WeaveEngine &  init(size_t curlpool_size,size_t threadpool);
             WeaveEngine(WeaveEngine &&)=delete;
             WeaveEngine(const WeaveEngine &)=delete;
             void operator=(WeaveEngine const &)=delete;

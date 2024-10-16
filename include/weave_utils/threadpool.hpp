@@ -78,6 +78,18 @@ namespace weave_utils
                     thd.join();
             }
     };
+
+    //WIP
+    template<typename F, typename ...Args>
+    auto submit_task(F && func, Args&&...arguments) -> decltype(func(arguments...))
+    {
+    std::function<decltype(func(arguments...))()> 
+        funcwrapper = std::bind(std::forward<F>(func),std::forward<Args>(arguments)...);
+    auto pack_func   = std::packaged_task<decltype(func(arguments...))()>(funcwrapper);
+    pack_func();
+    return pack_func.get_future().get();
+    }
+
 }
 
 //A thread pool needs to have an upper limit for the number of threads running

@@ -10,10 +10,10 @@ macro(LibAsioFetch ASIO_VERSION)
         USES_TERMINAL_DOWNLOAD TRUE
         CONFIGURE_COMMAND cd ${ASIO_SOURCE_DIR}/asio && 
             ./autogen.sh &&
-            ./configure  --with-boost=no
-        BUILD_COMMAND make 
-        INSTALL_COMMAND make install
-        INSTALL_DIR ${ASIO_INSTALL_DIR}
+            ./configure  --with-boost=no --prefix=${ASIO_INSTALL_DIR}
+        BUILD_COMMAND cd ${ASIO_SOURCE_DIR}/asio && make 
+        INSTALL_COMMAND cd ${ASIO_SOURCE_DIR}/asio && make install
+        DOWNLOAD_EXTRACT_TIMESTAMP true
     )
 endmacro(LibAsioFetch)
 

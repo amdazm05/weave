@@ -15,8 +15,9 @@ macro(LibAsioFetch ASIO_VERSION)
         INSTALL_COMMAND cd ${ASIO_SOURCE_DIR}/asio && make install
         DOWNLOAD_EXTRACT_TIMESTAMP true
     )
+    include_directories(${ASIO_INSTALL_DIR}/include)
 endmacro(LibAsioFetch)
 
 function(LibAsioTargetInclude NAME_EXE)
-  target_include_directories(${NAME_EXE} PRIVATE ${LIBCURL_SOURCE_DIR}/include)
+  target_include_directories(${NAME_EXE} PRIVATE ${ASIO_INSTALL_DIR}/include)
 endfunction(LibAsioTargetInclude)

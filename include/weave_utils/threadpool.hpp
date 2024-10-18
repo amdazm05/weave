@@ -8,6 +8,8 @@
 #include <mutex>
 #include <condition_variable>
 #include <queue>
+#include <future>
+
 namespace weave_utils
 {
     //Use this mechanism for doing this
@@ -18,7 +20,7 @@ namespace weave_utils
 
     template<typename thread_t=std::jthread, //thread type std::thread, std::jthread / custom threads
         size_t N=1,//number of threads
-        typename func_t=std::function<void(std::string_view s)>>
+        typename func_t=std::function<void()>>
     // requires less_than_max_hardware_concurrency<N>
     class threadpool_t
     {
@@ -39,7 +41,6 @@ namespace weave_utils
                         while (true)
                         {
                             func_t taskexe;
-                            while(1)
                             {
                                 std::unique_lock<std::mutex> l(mtx_);
                                 v_.wait(l,[this](){
@@ -50,8 +51,7 @@ namespace weave_utils
                                 taskexe = std::move(tasks_.front());
                                 tasks_.pop();
                             }
-                            //TODO find a mechanism to use arguments
-                            taskexe("");
+                            taskexe();
                         }
                     });
                 }
@@ -77,19 +77,26 @@ namespace weave_utils
                 for(auto & thd:pool_)
                     thd.join();
             }
+
+            template <typename F, typename... Args>
+            auto submit_task(F &&func, Args &&...arguments) -> decltype(func(arguments...))
+            {
+                using funcsig = decltype(func(arguments...));
+                std::function<funcsig()>
+                    funcwrapper = std::bind(std::forward<F>(func), std::forward<Args>(arguments)...);
+                auto pack_func = std::packaged_task<funcsig()>(funcwrapper);
+                std::function<void()> packed = [&pack_func]()
+                {
+                    pack_func();
+                };
+                {
+                    std::lock_guard<std::mutex> l(mtx_);
+                    tasks_.push(packed);
+                }
+                v_.notify_one();
+                return pack_func.get_future().get();
+            }
     };
-
-    //WIP
-    template<typename F, typename ...Args>
-    auto submit_task(F && func, Args&&...arguments) -> decltype(func(arguments...))
-    {
-    std::function<decltype(func(arguments...))()> 
-        funcwrapper = std::bind(std::forward<F>(func),std::forward<Args>(arguments)...);
-    auto pack_func   = std::packaged_task<decltype(func(arguments...))()>(funcwrapper);
-    pack_func();
-    return pack_func.get_future().get();
-    }
-
 }
 
 //A thread pool needs to have an upper limit for the number of threads running

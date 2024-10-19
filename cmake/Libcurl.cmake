@@ -11,6 +11,7 @@ macro(LibCurlFetchInstall LIBCURL_VERSION)
     USES_TERMINAL_DOWNLOAD TRUE
     CONFIGURE_COMMAND ${LIBCURL_SOURCE_DIR}/configure
       --prefix=${LIBCURL_INSTALL_DIR}
+      --enable-websockets
       --with-openssl=${OPENSSL_INSTALL_DIR}
     BUILD_COMMAND make
     TEST_COMMAND ""

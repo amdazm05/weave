@@ -4,6 +4,7 @@
 #include <curl/curl.h>
 #include <weave/curl/error_handler.hpp>
 #include <memory>
+#include <spdlog/spdlog.h>
 
 using namespace weave_curl;
 namespace weave
@@ -12,7 +13,7 @@ namespace weave
     class WebSocketClient
     {
         private:
-            std::unique_ptr<CURL> handle_;
+            std::unique_ptr<CURL,decltype(&curl_easy_cleanup)> handle_;
             std::string recv_buffer;
             CURLcode res;
             CurlErrorReporter err;
@@ -22,6 +23,7 @@ namespace weave
             WebSocketClient(std::string_view url);
             ~WebSocketClient();
             bool reconnect(std::string_view url);
+            bool connect();
             std::string && recv();
             void send(std::string_view payload);
     };

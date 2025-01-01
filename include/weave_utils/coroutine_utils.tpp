@@ -16,7 +16,7 @@ namespace weave_coro{
 
         Gen get_return_object() 
         {
-            return Gen(this);
+            return Gen{this};
         }
         std::suspend_always initial_suspend()
         {

@@ -1,6 +1,5 @@
 # Project Weave
-A project that aims to be a discord bot - framework utility box
-
+Aims to be a modern C++20 based HTTP and Websockets handler.
 
 # Tests
 To run the tests go to `build/tests/` and execute the following command:
